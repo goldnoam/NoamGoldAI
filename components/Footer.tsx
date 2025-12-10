@@ -24,6 +24,8 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
             <div className="flex items-center gap-6">
               <a 
                 href="#" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-slate-500 hover:text-[#0077b5] transition-all duration-300 transform hover:scale-110"
                 aria-label="LinkedIn"
               >
@@ -31,6 +33,8 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
               </a>
               <a 
                 href="#" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-slate-500 hover:text-white transition-all duration-300 transform hover:scale-110"
                 aria-label="GitHub"
               >
@@ -38,6 +42,8 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
               </a>
               <a 
                 href="#" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-slate-500 hover:text-[#1DA1F2] transition-all duration-300 transform hover:scale-110"
                 aria-label="Twitter"
               >
