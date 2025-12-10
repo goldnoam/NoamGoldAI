@@ -5,10 +5,20 @@ import LanguageSelector from './components/LanguageSelector';
 import Card from './components/Card';
 import Footer from './components/Footer';
 import ShareButton from './components/ShareButton';
+import Loader from './components/Loader';
 
 function App() {
+  const [loading, setLoading] = useState(true);
   const [currentLang, setCurrentLang] = useState<LanguageCode>(LanguageCode.EN);
   const t = TRANSLATIONS[currentLang];
+
+  // Simulate initial loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Handle RTL direction for Hebrew
   useEffect(() => {
@@ -17,8 +27,12 @@ function App() {
     document.documentElement.lang = currentLang;
   }, [currentLang]);
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-blue-500/30">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-blue-500/30 animate-in fade-in duration-700">
       {/* Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-blue-500/10 rounded-full blur-[120px]"></div>
