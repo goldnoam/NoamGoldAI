@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Linkedin, Github, Twitter } from 'lucide-react';
+import { Mail, Linkedin, Github } from 'lucide-react';
 import { Translation } from '../types';
 
 interface FooterProps {
@@ -23,7 +23,7 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="flex items-center gap-6">
               <a 
-                href="#" 
+                href="https://www.linkedin.com/in/noamgold/" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-slate-500 hover:text-[#0077b5] transition-all duration-300 transform hover:scale-110"
@@ -32,22 +32,13 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
                 <Linkedin size={24} />
               </a>
               <a 
-                href="#" 
+                href="https://github.com/goldnoam" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-slate-500 hover:text-white transition-all duration-300 transform hover:scale-110"
                 aria-label="GitHub"
               >
                 <Github size={24} />
-              </a>
-              <a 
-                href="#" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-500 hover:text-[#1DA1F2] transition-all duration-300 transform hover:scale-110"
-                aria-label="Twitter"
-              >
-                <Twitter size={24} />
               </a>
             </div>
 

@@ -35,7 +35,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ t }) => {
   return (
     <button
       onClick={handleShare}
-      className="fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-full shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 hover:scale-110 transition-all duration-300 flex items-center justify-center group"
+      className="fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-full shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 hover:animate-bounce transition-all duration-300 flex items-center justify-center group"
       aria-label={t.share}
     >
       {copied ? <Check size={24} /> : <Share2 size={24} />}
