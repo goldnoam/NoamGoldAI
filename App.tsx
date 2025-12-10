@@ -5,14 +5,13 @@ import LanguageSelector from './components/LanguageSelector';
 import Card from './components/Card';
 import Footer from './components/Footer';
 import ShareButton from './components/ShareButton';
-import Loader from './components/Loader';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [currentLang, setCurrentLang] = useState<LanguageCode>(LanguageCode.EN);
   const t = TRANSLATIONS[currentLang];
 
-  // Simulate initial loading
+  // Simulate initial loading for cards
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -27,9 +26,21 @@ function App() {
     document.documentElement.lang = currentLang;
   }, [currentLang]);
 
-  if (loading) {
-    return <Loader />;
-  }
+  // Dynamically load AdSense script with error handling
+  useEffect(() => {
+    // Check if script is already present to prevent duplicates
+    if (document.querySelector('script[src*="adsbygoogle"]')) return;
+
+    const script = document.createElement('script');
+    script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0274741291001288";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    script.onerror = () => {
+      // Quietly log that ads were blocked/failed to load
+      console.log("AdSense script blocked or failed to load. This is expected if an ad blocker is active.");
+    };
+    document.head.appendChild(script);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-blue-500/30 animate-in fade-in duration-700">
@@ -75,6 +86,7 @@ function App() {
               title={t[card.titleKey]}
               description={t[card.descKey]}
               visitText={t.visit}
+              loading={loading}
             />
           ))}
         </div>
