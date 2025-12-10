@@ -16,7 +16,7 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText }) => {
       href={data.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex flex-col h-full bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 md:p-8 hover:bg-slate-800 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-[1.03] overflow-hidden cursor-pointer"
+      className="group relative flex flex-col h-full bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 md:p-8 hover:bg-slate-800 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105 overflow-hidden cursor-pointer"
     >
       <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <ExternalLink className="text-blue-400 w-5 h-5" />

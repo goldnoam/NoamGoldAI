@@ -29,11 +29,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ currentLang, onLang
     <div className="relative z-50" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-full border border-slate-700 transition-all duration-200"
+        className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-full border border-slate-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
         aria-label="Select language"
       >
         <Globe size={18} className="text-blue-400" />
-        <span className="text-sm font-medium hidden sm:inline">{label}</span>
+        <span className="text-base font-medium">{label}</span>
         <span className="text-lg leading-none">{currentFlag}</span>
         <ChevronDown size={16} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
