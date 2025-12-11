@@ -29,17 +29,17 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ currentLang, onLang
     <div className="relative z-50" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 bg-slate-800 hover:bg-slate-800 text-white px-4 py-2 rounded-full border border-slate-700 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40"
+        className={`group flex items-center gap-2 bg-slate-800 hover:bg-slate-750 text-white px-4 py-2 rounded-full border border-slate-700 hover:border-blue-500 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30 ${isOpen ? 'border-blue-500 ring-2 ring-blue-500/20' : ''}`}
         aria-label="Select language"
       >
-        <Globe size={18} className="text-blue-400" />
-        <span className="text-base font-medium">{label}</span>
+        <Globe size={18} className="text-blue-400 group-hover:text-blue-300 transition-colors duration-300" />
+        <span className="text-base font-medium group-hover:text-blue-50 transition-colors duration-300">{label}</span>
         <span className="text-lg leading-none">{currentFlag}</span>
-        <ChevronDown size={16} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown size={16} className={`text-slate-400 group-hover:text-blue-300 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-xl shadow-xl border border-slate-700 overflow-hidden py-1 max-h-80 overflow-y-auto">
+        <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-xl shadow-xl border border-slate-700 overflow-hidden py-1 max-h-80 overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}

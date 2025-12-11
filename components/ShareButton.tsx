@@ -36,16 +36,21 @@ const ShareButton: React.FC<ShareButtonProps> = ({ t }) => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-40">
-      {copied && (
-        <div className="absolute bottom-full right-0 mb-2 whitespace-nowrap bg-slate-800 text-white text-xs py-1 px-3 rounded-lg shadow-lg border border-slate-700 animate-in fade-in slide-in-from-bottom-2">
-          {t.copied}
-        </div>
-      )}
+    <div className="fixed bottom-6 right-6 z-40 group">
+      <div 
+        className={`absolute bottom-full right-0 mb-3 whitespace-nowrap bg-slate-800 text-white text-xs py-1.5 px-3 rounded-lg shadow-lg border border-slate-700 transition-all duration-200 transform origin-bottom pointer-events-none select-none
+        ${copied 
+          ? 'opacity-100 scale-100 translate-y-0' 
+          : 'opacity-0 scale-95 translate-y-2 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0'
+        }`}
+      >
+        {copied ? t.copied : t.share}
+      </div>
+
       <button
         onClick={handleShare}
         disabled={loading}
-        className={`bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-full shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 transition-all duration-300 flex items-center justify-center group ${loading ? 'cursor-wait scale-100' : 'hover:animate-bounce hover:scale-110'}`}
+        className={`bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-full shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 transition-all duration-300 flex items-center justify-center ${loading ? 'cursor-wait scale-100' : 'hover:scale-110 active:scale-95'}`}
         aria-label={t.share}
       >
         {loading ? (
