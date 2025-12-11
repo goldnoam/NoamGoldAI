@@ -29,7 +29,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ currentLang, onLang
     <div className="relative z-50" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`group flex items-center gap-2 bg-slate-800 hover:bg-slate-750 text-white px-4 py-2 rounded-full border border-slate-700 hover:border-blue-500 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30 ${isOpen ? 'border-blue-500 ring-2 ring-blue-500/20' : ''}`}
+        className={`group flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-full border border-slate-700 hover:border-blue-500 transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-blue-500/30 ${isOpen ? 'border-blue-500 ring-2 ring-blue-500/20' : ''}`}
         aria-label="Select language"
       >
         <Globe size={18} className="text-blue-400 group-hover:text-blue-300 transition-colors duration-300" />
