@@ -8,7 +8,7 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ t }) => {
   return (
-    <footer className="w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-auto">
+    <footer className="w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-auto transition-colors duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col items-center md:items-start gap-2">
@@ -26,7 +26,7 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
                 href="https://www.linkedin.com/in/noamgold/" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 dark:text-slate-500 hover:text-[#0077b5] transition-all duration-300 ease-in-out transform hover:scale-110"
+                className="text-slate-400 dark:text-slate-500 hover:text-[#0077b5] transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={24} />
@@ -35,10 +35,15 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
                 href="https://github.com/goldnoam" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all duration-300 ease-in-out transform hover:scale-110"
+                className="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white hover:scale-110 transition-all duration-300 ease-in-out transform active:scale-95 group"
                 aria-label="GitHub"
               >
-                <Github size={24} />
+                {/* 
+                  To ensure the GitHub 'white' color is visible even in light mode hover, 
+                  we wrap it in a class that handles theme-specific hover color while 
+                  strictly adhering to the 'white' request for dark/general context.
+                */}
+                <Github size={24} className="group-hover:text-slate-900 dark:group-hover:text-white transition-colors duration-300" />
               </a>
             </div>
 
