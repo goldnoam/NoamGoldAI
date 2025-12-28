@@ -4,55 +4,74 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- SEO Meta Tags -->
-    <title>Noam Gold - Games, Learning & Tech Hub</title>
-    <meta name="description" content="The central hub for Noam Gold's digital universe. Play immersive browser games, access educational learning resources, and explore the latest in technology and software development. Multilingual support available." />
-    <meta name="keywords" content="Noam Gold, Games, Browser Games, HTML5 Games, Learning, Education, EdTech, Tech, Technology, Software Development, Web Development, Portfolio, React, TypeScript, Hebrew Tech, Educational Resources" />
+    <!-- Primary SEO Meta Tags -->
+    <title>Noam Gold AI - Portal for Games, Learning & Tech</title>
+    <meta name="title" content="Noam Gold AI - Games, Learning & Tech Hub" />
+    <meta name="description" content="Discover Noam Gold AI's digital universe. Play high-quality HTML5 browser games, access interactive educational resources at Learn & Fun, and explore cutting-edge technology innovations. Your all-in-one portal for digital entertainment and growth." />
+    <meta name="keywords" content="Noam Gold AI, Browser Games, HTML5 Games, Educational Games, Learning Resources, Tech Innovation, Software Development, Web Portals, Noam Gold Games, Learn and Fun, Tech Hub" />
     <meta name="author" content="Noam Gold" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0f172a" />
     <link rel="canonical" href="https://noamgoldai.vercel.app/" />
 
-    <!-- Open Graph / Facebook -->
+    <!-- Performance Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://aistudiocdn.com">
+
+    <!-- Open Graph / Facebook (Portal Specifics) -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://noamgoldai.vercel.app/" />
-    <meta property="og:title" content="Noam Gold - Digital Universe" />
-    <meta property="og:description" content="Explore Noam Gold's Games, Learning, and Tech portals. A central hub for digital entertainment and education." />
+    <meta property="og:title" content="Noam Gold AI - Digital Experience Hub" />
+    <meta property="og:description" content="Explore Noam Gold's three pillars: Immersive Gaming, Educational Learning, and Innovative Tech. Switch between languages and themes for a personalized experience." />
+    <meta property="og:image" content="https://noamgoldai.vercel.app/og-image.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content="Noam Gold - Digital Universe" />
-    <meta property="twitter:description" content="Explore Noam Gold's Games, Learning, and Tech portals." />
+    <meta property="twitter:url" content="https://noamgoldai.vercel.app/" />
+    <meta property="twitter:title" content="Noam Gold AI - Games, Learning & Tech" />
+    <meta property="twitter:description" content="Dive into the digital world of Noam Gold. Browser games, educational tools, and technology insights all in one place." />
+    <meta property="twitter:image" content="https://noamgoldai.vercel.app/og-image.png" />
+
+    <!-- Portal Specific Meta (Custom Tags for SEO Parsers) -->
+    <meta name="portal:games" content="https://noam-gold-games.vercel.app/ - Play free immersive HTML5 browser games." />
+    <meta name="portal:learning" content="https://learnandfun.vercel.app - Interactive educational resources for all ages." />
+    <meta name="portal:tech" content="https://learnht.vercel.app - Explore modern web technology and innovation." />
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%233b82f6%22/><text x=%2250%22 y=%2250%22 font-family=%22Arial%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.35em%22>NG</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Structured Data (JSON-LD) -->
+    <!-- Structured Data (Enhanced JSON-LD) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Noam Gold",
+      "name": "Noam Gold AI",
       "url": "https://noamgoldai.vercel.app/",
-      "description": "A central hub landing page linking to Noam Gold's Games, Learning, and Tech portals.",
+      "description": "A centralized hub linking to premium gaming, educational, and technological platforms.",
+      "publisher": {
+        "@type": "Person",
+        "name": "Noam Gold"
+      },
       "mainEntity": [
         {
-          "@type": "SiteNavigationElement",
-          "name": "Games",
+          "@type": "SoftwareApplication",
+          "name": "Noam Gold Games",
           "url": "https://noam-gold-games.vercel.app/",
-          "description": "Dive into immersive and fun gaming experiences."
+          "applicationCategory": "GameApplication",
+          "description": "A collection of immersive and fun browser-based games."
         },
         {
-          "@type": "SiteNavigationElement",
-          "name": "Learn",
+          "@type": "CreativeWork",
+          "name": "Learn and Fun",
           "url": "https://learnandfun.vercel.app",
-          "description": "Expand your mind with educational resources."
+          "description": "Educational resources designed to expand your mind through interactive learning."
         },
         {
-          "@type": "SiteNavigationElement",
-          "name": "Tech",
+          "@type": "TechArticle",
+          "name": "Tech Hub",
           "url": "https://learnht.vercel.app",
-          "description": "Discover the latest in technology and innovation."
+          "description": "Insights and latest innovations in modern technology and software development."
         }
       ]
     }
