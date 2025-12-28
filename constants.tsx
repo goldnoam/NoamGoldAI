@@ -29,6 +29,7 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     share: "Share",
     copied: "URL Copied!",
     language: "Language",
+    search: "Search content...",
   },
   [LanguageCode.HE]: {
     title: "נועם גולד",
@@ -45,6 +46,7 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     share: "שתף",
     copied: "הקישור הועתק!",
     language: "שפה",
+    search: "חפש...",
   },
   [LanguageCode.ZH]: {
     title: "Noam Gold",
@@ -61,6 +63,7 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     share: "分享",
     copied: "链接已复制！",
     language: "语言",
+    search: "搜索内容...",
   },
   [LanguageCode.HI]: {
     title: "Noam Gold",
@@ -77,6 +80,7 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     share: "साझा करें",
     copied: "URL कॉपी किया गया!",
     language: "भाषा",
+    search: "खोजें...",
   },
   [LanguageCode.RU]: {
     title: "Noam Gold",
@@ -93,6 +97,7 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     share: "Поделиться",
     copied: "Ссылка скопирована!",
     language: "Язык",
+    search: "Поиск...",
   },
   [LanguageCode.DE]: {
     title: "Noam Gold",
@@ -109,6 +114,7 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     share: "Teilen",
     copied: "URL kopiert!",
     language: "Sprache",
+    search: "Suche...",
   },
   [LanguageCode.ES]: {
     title: "Noam Gold",
@@ -125,6 +131,7 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     share: "Compartir",
     copied: "¡URL copiada!",
     language: "Idioma",
+    search: "Buscar...",
   },
   [LanguageCode.FR]: {
     title: "Noam Gold",
@@ -141,6 +148,7 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     share: "Partager",
     copied: "URL copiée !",
     language: "Langue",
+    search: "Rechercher...",
   },
 };
 

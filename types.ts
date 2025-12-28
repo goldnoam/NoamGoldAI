@@ -24,6 +24,7 @@ export interface Translation {
   share: string;
   copied: string;
   language: string;
+  search: string;
 }
 
 export interface CardData {
