@@ -33,4 +33,5 @@ export interface CardData {
   descKey: keyof Translation;
   url: string;
   icon: 'gamepad' | 'book' | 'cpu';
+  imageUrl: string;
 }

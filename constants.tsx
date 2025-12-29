@@ -159,6 +159,7 @@ export const CARDS: CardData[] = [
     descKey: 'gamesDesc',
     url: 'https://noam-gold-games.vercel.app/',
     icon: 'gamepad',
+    imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800',
   },
   {
     id: 'learn',
@@ -166,6 +167,7 @@ export const CARDS: CardData[] = [
     descKey: 'learnDesc',
     url: 'https://learnandfun.vercel.app',
     icon: 'book',
+    imageUrl: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800',
   },
   {
     id: 'tech',
@@ -173,6 +175,7 @@ export const CARDS: CardData[] = [
     descKey: 'techDesc',
     url: 'https://learnht.vercel.app',
     icon: 'cpu',
+    imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800',
   },
 ];
 

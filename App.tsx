@@ -12,15 +12,25 @@ function App() {
   const [currentLang, setCurrentLang] = useState<LanguageCode>(LanguageCode.EN);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
   const t = TRANSLATIONS[currentLang];
 
-  // Simulate initial loading for cards
+  // Initial load simulation
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
+      // Trigger entrance animation slightly after loading ends
+      setTimeout(() => setIsVisible(true), 100);
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Trigger re-animation when search changes or language changes
+  useEffect(() => {
+    setIsVisible(false);
+    const timer = setTimeout(() => setIsVisible(true), 50);
+    return () => clearTimeout(timer);
+  }, [searchQuery, currentLang]);
 
   // Handle RTL direction for Hebrew
   useEffect(() => {
@@ -112,7 +122,7 @@ function App() {
       </header>
 
       <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16 space-y-4">
+        <div className={`text-center max-w-3xl mx-auto mb-12 md:mb-16 space-y-4 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
           <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight">
              {t.title}
           </h2>
@@ -123,15 +133,24 @@ function App() {
 
         {filteredCards.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {filteredCards.map((card) => (
-              <Card
-                key={card.id}
-                data={card}
-                title={t[card.titleKey]}
-                description={t[card.descKey]}
-                visitText={t.visit}
-                loading={loading}
-              />
+            {filteredCards.map((card, index) => (
+              <div 
+                key={card.id} 
+                className="transition-all duration-700 ease-out"
+                style={{ 
+                  opacity: isVisible ? 1 : 0, 
+                  transform: isVisible ? 'translateY(0)' : 'translateY(2rem)',
+                  transitionDelay: `${index * 100}ms`
+                }}
+              >
+                <Card
+                  data={card}
+                  title={t[card.titleKey]}
+                  description={t[card.descKey]}
+                  visitText={t.visit}
+                  loading={loading}
+                />
+              </div>
             ))}
           </div>
         ) : (
