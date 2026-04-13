@@ -25,6 +25,9 @@ export interface Translation {
   copied: string;
   language: string;
   search: string;
+  linkedin: string;
+  moreSites: string;
+  moreGames: string;
 }
 
 export interface CardData {

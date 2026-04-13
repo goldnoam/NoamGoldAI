@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { Mail, Linkedin, Github } from 'lucide-react';
 import { Translation } from '../types';
 
@@ -8,53 +9,57 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ t }) => {
   return (
-    <footer className="w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-auto transition-colors duration-500">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col items-center md:items-start gap-2">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+    <footer className="w-full glass-dark border-t border-white/10 mt-auto py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <h2 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {t.title}
             </h2>
-            <span className="text-slate-500 text-sm">
+            <p className="text-muted-foreground text-sm font-medium">
               &copy; {t.footerRights}
-            </span>
+            </p>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="flex flex-wrap justify-center gap-8">
+            <a href="https://noamgoldai.vercel.app/" className="text-sm font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+              {t.moreSites}
+            </a>
+            <a href="https://noam-gold-games.vercel.app/" className="text-sm font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+              {t.moreGames}
+            </a>
+          </div>
+
+          <div className="flex flex-col items-center md:items-end gap-6">
             <div className="flex items-center gap-6">
-              <a 
-                href="https://www.linkedin.com/in/noamgold/" 
+              <motion.a 
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                href="https://www.linkedin.com/in/noamgold" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 dark:text-slate-500 hover:text-[#0077b5] transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95"
+                className="text-muted-foreground hover:text-[#0077b5] transition-colors"
                 aria-label="LinkedIn"
               >
-                <Linkedin size={24} />
-              </a>
-              <a 
+                <Linkedin size={28} />
+              </motion.a>
+              <motion.a 
+                whileHover={{ scale: 1.2, rotate: -5 }}
                 href="https://github.com/goldnoam" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white hover:scale-110 transition-all duration-300 ease-in-out transform active:scale-95 group"
+                className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="GitHub"
               >
-                {/* 
-                  To ensure the GitHub 'white' color is visible even in light mode hover, 
-                  we wrap it in a class that handles theme-specific hover color while 
-                  strictly adhering to the 'white' request for dark/general context.
-                */}
-                <Github size={24} className="group-hover:text-slate-900 dark:group-hover:text-white transition-colors duration-300" />
-              </a>
+                <Github size={28} />
+              </motion.a>
             </div>
-
-            <div className="hidden md:block w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
 
             <a
               href="mailto:goldnoamai@gmail.com"
-              className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 group px-4 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors group"
             >
-              <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              <span className="font-medium">{t.sendFeedback}</span>
+              <Mail className="w-5 h-5 group-hover:animate-bounce" />
+              <span className="font-bold text-sm uppercase tracking-widest">Send Feedback</span>
             </a>
           </div>
         </div>

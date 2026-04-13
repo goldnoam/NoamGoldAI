@@ -1,101 +1,105 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { TRANSLATIONS, CARDS } from './constants';
 import { LanguageCode } from './types';
 import LanguageSelector from './components/LanguageSelector';
 import Card from './components/Card';
 import Footer from './components/Footer';
 import ShareButton from './components/ShareButton';
-import { Sun, Moon, Search, X } from 'lucide-react';
+import AnimatedBackground from './components/AnimatedBackground';
+import { Sun, Moon, Palette, Search, X, Sparkles } from 'lucide-react';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [currentLang, setCurrentLang] = useState<LanguageCode>(LanguageCode.EN);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light' | 'colorful'>('dark');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isVisible, setIsVisible] = useState(false);
   const t = TRANSLATIONS[currentLang];
 
-  // Initial load simulation
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-      // Trigger entrance animation slightly after loading ends
-      setTimeout(() => setIsVisible(true), 100);
-    }, 1000);
+    const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  // Trigger re-animation when search changes or language changes
-  useEffect(() => {
-    setIsVisible(false);
-    const timer = setTimeout(() => setIsVisible(true), 50);
-    return () => clearTimeout(timer);
-  }, [searchQuery, currentLang]);
-
-  // Handle RTL direction for Hebrew
   useEffect(() => {
     const isRTL = currentLang === LanguageCode.HE;
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = currentLang;
   }, [currentLang]);
 
-  // Handle theme changes
   useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.remove('dark', 'light', 'colorful');
+    document.documentElement.classList.add(theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+    setTheme(prev => {
+      if (prev === 'dark') return 'light';
+      if (prev === 'light') return 'colorful';
+      return 'dark';
+    });
   };
 
   const filteredCards = useMemo(() => {
     if (!searchQuery.trim()) return CARDS;
     const query = searchQuery.toLowerCase();
     return CARDS.filter((card) => {
-      const title = t[card.titleKey].toLowerCase();
-      const desc = t[card.descKey].toLowerCase();
+      const title = t[card.titleKey]?.toLowerCase() || '';
+      const desc = t[card.descKey]?.toLowerCase() || '';
       return title.includes(query) || desc.includes(query);
     });
   }, [searchQuery, t]);
 
-  return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-blue-500/30 transition-colors duration-500">
-      {/* Background decoration */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[120px]"></div>
-        <div className="absolute top-1/2 -right-1/4 w-1/2 h-1/2 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-[120px]"></div>
-      </div>
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
 
-      <header className="sticky top-0 z-40 w-full backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80">
+  const cardVariants = {
+    hidden: { opacity: 0, y: 40, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1 }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col relative overflow-hidden selection:bg-primary/30">
+      <AnimatedBackground />
+
+      <header className="sticky top-0 z-50 w-full glass-dark border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 shrink-0">
-             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-3 shrink-0"
+          >
+             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">
               NG
             </div>
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white hidden sm:block">
+            <h1 className="text-xl md:text-2xl font-extrabold tracking-tighter text-foreground hidden sm:block">
               {t.title}
             </h1>
-          </div>
+          </motion.div>
 
           <div className="flex-grow max-w-md relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none rtl:left-auto rtl:right-0 rtl:pr-3">
-              <Search size={18} className="text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+              <Search size={18} className="text-muted-foreground group-focus-within:text-primary transition-colors" />
             </div>
             <input
               type="text"
               placeholder={t.search}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full py-2 pl-10 pr-10 rtl:pr-10 rtl:pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm md:text-base"
+              className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-10 pr-10 rtl:pr-10 rtl:pl-10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm md:text-base backdrop-blur-md"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rtl:right-auto rtl:left-0 rtl:pl-3"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground rtl:right-auto rtl:left-0 rtl:pl-3"
               >
                 <X size={16} />
               </button>
@@ -103,13 +107,15 @@ function App() {
           </div>
           
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
               onClick={toggleTheme}
-              className="p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-300 transform hover:scale-110 active:scale-95 border border-slate-200 dark:border-slate-700 shadow-sm"
+              className="p-2.5 rounded-full glass border border-white/10 text-foreground hover:text-primary transition-all duration-300 shadow-sm"
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
+              {theme === 'dark' ? <Moon size={20} /> : theme === 'light' ? <Sun size={20} /> : <Palette size={20} />}
+            </motion.button>
             <div className="hidden xs:block">
               <LanguageSelector 
                 currentLang={currentLang} 
@@ -122,48 +128,77 @@ function App() {
       </header>
 
       <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-20 relative z-10">
-        <div className={`text-center max-w-3xl mx-auto mb-12 md:mb-16 space-y-4 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center max-w-3xl mx-auto mb-16 md:mb-24 space-y-6"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-white/10 text-xs font-bold tracking-widest uppercase text-primary mb-4">
+            <Sparkles size={14} />
+            Welcome to the Future
+          </div>
+          <h2 className="text-5xl md:text-7xl font-black text-foreground leading-tight tracking-tighter">
              {t.title}
           </h2>
-          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400">
+          <p className="text-xl md:text-2xl text-muted-foreground font-medium">
             {t.subtitle}
           </p>
-        </div>
+        </motion.div>
 
-        {filteredCards.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {filteredCards.map((card, index) => (
-              <div 
-                key={card.id} 
-                className="transition-all duration-700 ease-out"
-                style={{ 
-                  opacity: isVisible ? 1 : 0, 
-                  transform: isVisible ? 'translateY(0)' : 'translateY(2rem)',
-                  transitionDelay: `${index * 100}ms`
-                }}
-              >
-                <Card
-                  data={card}
-                  title={t[card.titleKey]}
-                  description={t[card.descKey]}
-                  visitText={t.visit}
-                  loading={loading}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 bg-white/50 dark:bg-slate-900/50 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
-            <p className="text-xl text-slate-500 dark:text-slate-400">No results found for "{searchQuery}"</p>
-            <button 
-              onClick={() => setSearchQuery('')}
-              className="mt-4 text-blue-500 hover:underline font-medium"
+        <AnimatePresence mode="wait">
+          {filteredCards.length > 0 ? (
+            <motion.div 
+              key={`grid-${searchQuery}`}
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 auto-rows-[300px]"
             >
-              Clear search
-            </button>
-          </div>
-        )}
+              {filteredCards.map((card, index) => {
+                // Bento grid logic: first card is large, others are medium
+                const gridClass = index === 0 
+                  ? "md:col-span-8 md:row-span-2" 
+                  : index === 1 
+                    ? "md:col-span-4 md:row-span-2"
+                    : "md:col-span-4 md:row-span-1";
+                
+                return (
+                  <motion.div 
+                    key={card.id} 
+                    className={gridClass}
+                    variants={cardVariants}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                  >
+                    <Card
+                      data={card}
+                      title={t[card.titleKey]}
+                      description={t[card.descKey]}
+                      visitText={t.visit}
+                      loading={loading}
+                      isLarge={index === 0}
+                    />
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-20 glass rounded-3xl border border-dashed border-white/10"
+            >
+              <p className="text-xl text-muted-foreground">No results found for "{searchQuery}"</p>
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="mt-4 text-primary hover:underline font-bold"
+              >
+                Clear search
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
       <Footer t={t} />
