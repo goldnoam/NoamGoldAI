@@ -14,6 +14,7 @@ function App() {
   const [currentLang, setCurrentLang] = useState<LanguageCode>(LanguageCode.EN);
   const [theme, setTheme] = useState<'dark' | 'light' | 'colorful'>('dark');
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchKey, setSearchKey] = useState(0);
   const t = TRANSLATIONS[currentLang];
 
   useEffect(() => {
@@ -93,12 +94,18 @@ function App() {
               type="text"
               placeholder={t.search}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSearchKey(prev => prev + 1);
+              }}
               className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-10 pr-10 rtl:pr-10 rtl:pl-10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm md:text-base backdrop-blur-md"
             />
             {searchQuery && (
               <button
-                onClick={() => setSearchQuery('')}
+                onClick={() => {
+                  setSearchQuery('');
+                  setSearchKey(prev => prev + 1);
+                }}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground rtl:right-auto rtl:left-0 rtl:pl-3"
               >
                 <X size={16} />
@@ -149,7 +156,7 @@ function App() {
         <AnimatePresence mode="wait">
           {filteredCards.length > 0 ? (
             <motion.div 
-              key={`grid-${searchQuery}`}
+              key={`grid-${searchKey}`}
               variants={containerVariants}
               initial="hidden"
               animate="visible"
