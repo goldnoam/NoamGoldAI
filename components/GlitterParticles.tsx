@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
-import type { Container, Engine } from "@tsparticles/engine";
+import type { Engine, Container } from "@tsparticles/engine";
 
 const GlitterParticles: React.FC = () => {
   const [init, setInit] = useState(false);
+  const containerRef = useRef<Container | null>(null);
 
   useEffect(() => {
     initParticlesEngine(async (engine: Engine) => {
@@ -12,10 +13,32 @@ const GlitterParticles: React.FC = () => {
     }).then(() => {
       setInit(true);
     });
+
+    const handleProfileHover = (e: Event) => {
+      const customEvent = e as CustomEvent<{ isHovering: boolean }>;
+      const container = containerRef.current;
+      if (container) {
+        if (customEvent.detail.isHovering) {
+          container.options.particles.number.value = 400;
+          container.options.particles.move.speed = 3;
+          container.options.particles.color.value = "#ffffff";
+        } else {
+          container.options.particles.number.value = 150;
+          container.options.particles.move.speed = 0.5;
+          container.options.particles.color.value = ["#ffffff", "#3b82f6", "#8b5cf6", "#f472b6"];
+        }
+        container.refresh();
+      }
+    };
+
+    window.addEventListener('profile-hover', handleProfileHover);
+    return () => window.removeEventListener('profile-hover', handleProfileHover);
   }, []);
 
-  const particlesLoaded = async (container?: Container): Promise<void> => {
-    console.log(container);
+  const particlesLoaded = async (container?: Container) => {
+    if (container) {
+      containerRef.current = container;
+    }
   };
 
   if (!init) return null;

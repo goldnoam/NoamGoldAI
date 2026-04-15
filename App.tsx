@@ -9,12 +9,13 @@ import ShareButton from './components/ShareButton';
 import AnimatedBackground from './components/AnimatedBackground';
 import WebGLInteraction from './components/WebGLInteraction';
 import GlitterParticles from './components/GlitterParticles';
-import { Sun, Moon, Palette, Search, X, Sparkles } from 'lucide-react';
+import CustomCursor from './components/CustomCursor';
+import { Sun, Moon, Search, X, Sparkles } from 'lucide-react';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [currentLang, setCurrentLang] = useState<LanguageCode>(LanguageCode.EN);
-  const [theme, setTheme] = useState<'dark' | 'light' | 'colorful'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchKey, setSearchKey] = useState(0);
   const t = TRANSLATIONS[currentLang];
@@ -31,16 +32,12 @@ function App() {
   }, [currentLang]);
 
   useEffect(() => {
-    document.documentElement.classList.remove('dark', 'light', 'colorful');
+    document.documentElement.classList.remove('dark', 'light');
     document.documentElement.classList.add(theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => {
-      if (prev === 'dark') return 'light';
-      if (prev === 'light') return 'colorful';
-      return 'dark';
-    });
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
   const filteredCards = useMemo(() => {
@@ -78,7 +75,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden selection:bg-primary/30">
+    <div className="min-h-screen flex flex-col relative overflow-hidden selection:bg-primary/30 cursor-none">
+      <CustomCursor />
       <AnimatedBackground />
       <WebGLInteraction />
       <GlitterParticles />
@@ -90,12 +88,28 @@ function App() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3 shrink-0"
           >
-             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">
-              NG
+            <div 
+              className="relative group/profile cursor-pointer"
+              onDoubleClick={() => window.open('https://www.linkedin.com/in/noamgold', '_blank')}
+              onMouseEnter={() => window.dispatchEvent(new CustomEvent('profile-hover', { detail: { isHovering: true } }))}
+              onMouseLeave={() => window.dispatchEvent(new CustomEvent('profile-hover', { detail: { isHovering: false } }))}
+            >
+              <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-primary/20 group-hover/profile:border-primary transition-all duration-500 group-hover/profile:scale-110 group-hover/profile:rotate-3 shadow-lg">
+                <img 
+                  src="https://media.licdn.com/dms/image/v2/D4D35AQEZWD92PXWmlg/profile-framedphoto-shrink_200_200/B4DZopElcZGkAY-/0/1761625659441?e=1776855600&v=beta&t=vGkFkyEEyv6iZm8AFJKerz0y_XWRk6y1XCzqnFq6Rc0" 
+                  alt="Noam Gold" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full animate-pulse"></div>
             </div>
-            <h1 className="text-xl md:text-2xl font-extrabold tracking-tighter text-foreground hidden sm:block">
-              {t.title}
-            </h1>
+            <div className="flex flex-col">
+              <h1 className="text-xl font-black tracking-tighter text-foreground leading-none">
+                {t.title}
+              </h1>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-primary opacity-70">AI Specialist</span>
+            </div>
           </motion.div>
 
           <div className="flex-grow max-w-md relative group">
@@ -133,7 +147,7 @@ function App() {
               className="p-2.5 rounded-full glass border border-white/10 text-foreground hover:text-primary transition-all duration-300 shadow-sm"
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? <Moon size={20} /> : theme === 'light' ? <Sun size={20} /> : <Palette size={20} />}
+              {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
             </motion.button>
             <div className="hidden xs:block">
               <LanguageSelector 

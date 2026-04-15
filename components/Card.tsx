@@ -49,14 +49,25 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
 
   if (loading) {
     return (
-      <div className="h-full glass border border-white/10 rounded-[2rem] p-8 flex flex-col items-center justify-center min-h-[300px] gap-4">
-        <div className="relative">
-          <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          </div>
+      <div className="h-full glass border border-white/10 rounded-[2rem] p-8 flex flex-col items-center justify-center min-h-[300px] gap-6">
+        <div className="relative w-16 h-16">
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 rounded-full border-2 border-primary/10 border-t-primary"
+          />
+          <motion.div 
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-4 rounded-full bg-primary/20 flex items-center justify-center"
+          >
+            <div className="w-2 h-2 rounded-full bg-primary" />
+          </motion.div>
         </div>
-        <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground animate-pulse">Loading Portal...</p>
+        <div className="space-y-2 text-center">
+          <p className="text-[10px] font-black tracking-[0.2em] uppercase text-primary/50">Initializing</p>
+          <p className="text-xs font-bold text-muted-foreground animate-pulse">Secure Connection...</p>
+        </div>
       </div>
     );
   }
@@ -75,16 +86,16 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
       whileHover={{ 
-        scale: 1.04,
-        y: -12,
-        transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+        scale: 1.05,
+        y: -16,
+        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
       }}
       style={{
         rotateX: isHovered ? rotateX : 0,
         rotateY: isHovered ? rotateY : 0,
         transformStyle: "preserve-3d",
       }}
-      className={`group relative flex flex-col h-full glass rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-500 border border-white/10 hover:border-primary/50 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6),0_0_30px_rgba(var(--primary),0.15)]`}
+      className={`group relative flex flex-col h-full glass rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-500 border border-white/10 hover:border-primary/50 hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.7),0_0_40px_rgba(var(--primary),0.2)]`}
     >
       {/* Spotlight Overlay */}
       <motion.div
