@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@google/genai": "^1.0.0",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
     "lucide-react": "^0.556.0",
     "motion": "^12.38.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tsparticles": "^3.9.1"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

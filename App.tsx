@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, Variants } from 'motion/react';
 import { TRANSLATIONS, CARDS } from './constants';
 import { LanguageCode } from './types';
 import LanguageSelector from './components/LanguageSelector';
@@ -7,6 +7,8 @@ import Card from './components/Card';
 import Footer from './components/Footer';
 import ShareButton from './components/ShareButton';
 import AnimatedBackground from './components/AnimatedBackground';
+import WebGLInteraction from './components/WebGLInteraction';
+import GlitterParticles from './components/GlitterParticles';
 import { Sun, Moon, Palette, Search, X, Sparkles } from 'lucide-react';
 
 function App() {
@@ -18,7 +20,7 @@ function App() {
   const t = TRANSLATIONS[currentLang];
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
+    const timer = setTimeout(() => setLoading(false), 500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -62,14 +64,24 @@ function App() {
     },
   };
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 40, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1 }
+  const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 15, scale: 0.99 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden selection:bg-primary/30">
       <AnimatedBackground />
+      <WebGLInteraction />
+      <GlitterParticles />
 
       <header className="sticky top-0 z-50 w-full glass-dark border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">

@@ -183,7 +183,7 @@ export const CARDS: CardData[] = [
     descKey: 'gamesDesc',
     url: 'https://noam-gold-games.vercel.app/',
     icon: 'gamepad',
-    imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800',
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=800',
   },
   {
     id: 'learn',

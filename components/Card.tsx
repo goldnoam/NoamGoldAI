@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
-import { ExternalLink, Loader2 } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { getIcon } from '../constants';
 import { CardData } from '../types';
 
@@ -44,10 +44,19 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
     ([x, y]) => `radial-gradient(300px circle at ${x}px ${y}px, rgba(var(--primary), 0.4), transparent 80%)`
   );
 
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   if (loading) {
     return (
-      <div className="h-full glass border border-white/10 rounded-[2rem] p-8 flex items-center justify-center min-h-[300px] animate-pulse">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+      <div className="h-full glass border border-white/10 rounded-[2rem] p-8 flex flex-col items-center justify-center min-h-[300px] gap-4">
+        <div className="relative">
+          <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          </div>
+        </div>
+        <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground animate-pulse">Loading Portal...</p>
       </div>
     );
   }
@@ -55,6 +64,8 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
   const handleCardClick = () => {
     window.open(data.url, '_blank', 'noopener,noreferrer');
   };
+
+  const fallbackImage = "https://images.unsplash.com/photo-1614332287897-cdc485fa562d?auto=format&fit=crop&q=80&w=800";
 
   return (
     <motion.div
@@ -64,16 +75,16 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
       whileHover={{ 
-        scale: 1.02,
-        y: -4,
-        transition: { duration: 0.5, ease: "easeOut" }
+        scale: 1.04,
+        y: -12,
+        transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
       }}
       style={{
         rotateX: isHovered ? rotateX : 0,
         rotateY: isHovered ? rotateY : 0,
         transformStyle: "preserve-3d",
       }}
-      className={`group relative flex flex-col h-full glass rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-500 border border-white/10 hover:border-primary/50`}
+      className={`group relative flex flex-col h-full glass rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-500 border border-white/10 hover:border-primary/50 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6),0_0_30px_rgba(var(--primary),0.15)]`}
     >
       {/* Spotlight Overlay */}
       <motion.div
@@ -96,15 +107,22 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
       />
 
       {/* Thumbnail Image Container */}
-      <div className={`relative w-full overflow-hidden ${isLarge ? 'h-64 md:h-full' : 'h-48'}`}>
+      <div className={`relative w-full overflow-hidden bg-muted ${isLarge ? 'h-64 md:h-full' : 'h-48'}`}>
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/5 animate-pulse">
+            <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+          </div>
+        )}
         <img 
-          src={data.imageUrl} 
+          src={imageError ? fallbackImage : data.imageUrl} 
           alt={title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          onLoad={() => setImageLoaded(true)}
+          onError={() => setImageError(true)}
+          className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           loading="lazy"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
         
         {/* Icon Overlay */}
         <div className="absolute bottom-6 left-6 p-4 rounded-2xl glass border border-white/20 text-white shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
