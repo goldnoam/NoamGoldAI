@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tearable Cloth Simulation</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0a0a0c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        canvas {
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            background: #111115;
+            cursor: crosshair;
+        }
+
+        .info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info h1 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #3b82f6;
+        }
+
+        .info p {
+            margin: 5px 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="info">
+        <h1>Cloth Physics</h1>
+        <p>• Left Click & Drag to pull</p>
+        <p>• Right Click to tear</p>
+        <p>• Physics: Verlet Integration</p>
+    </div>
+
+    <div class="controls">
+        (C) Noam Gold AI 2026
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        /**
+         * TEARABLE CLOTH SIMULATION
+         * Using Verlet Integration
+         */
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Settings
+        const settings = {
+            clothWidth: 60,
+            clothHeight: 40,
+            spacing: 12,
+            gravity: 0.25,
+            friction: 0.99,
+            tearDistance: 60,
+            stiffness: 1
+        };
+
+        let width, height;
+        let points = [];
+        let constraints = [];
+        let mouse = { x: 0, y: 0, px: 0, py: 0, down: false, button: 0 };
+
+        /**
+         * Point Object (Verlet Particle)
+         */
+        class Point {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.px = x; // Previous X
+                this.py = y; // Previous Y
+                this.vx = 0; // Velocity X
+                this.vy = 0; // Velocity Y
+                this.pinX = null;
+                this.pinY = null;
+            }
+
+            update() {
+                if (this.pinX !== null) return;
+
+                // Verlet Integration
+                // next_pos = curr_pos + (curr_pos - prev_pos) + acceleration * dt^2
+                this.vx = (this.x - this.px) * settings.friction;
+                this.vy = (this.y - this.py) * settings.friction;
+
+                this.px = this.x;
+                this.py = this.y;
+
+                this.x += this.vx;
+                this.y += this.vy;
+                this.y += settings.gravity;
+            }
+
+            pin(x, y) {
+                this.pinX = x;
+                this.pinY = y;
+            }
+
+            draw() {
+                // Points are usually invisible in cloth, we only draw constraints
+            }
+        }
+
+        /**
+         * Constraint Object (Distance Constraint)
+         */
+        class Constraint {
+            constructor(p1, p2) {
+                this.p1 = p1;
+                this.p2 = p2;
+                this.length = settings.spacing;
+                this.active = true;
+            }
+
+            resolve() {
+                if (!this.active) return;
+
+                const dx = this.p1.x - this.p2.x;
+                const dy = this.p1.y - this.p2.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Tear if stretched too far
+                if (distance > settings.tearDistance) {
+                    this.active = false;
+                    return;
+                }
+
+                const diff = (this.length - distance) / distance;
+                const offset = diff * settings.stiffness * 0.5;
+
+                const ox = dx * offset;
+                const oy = dy * offset;
+
+                if (this.p1.pinX === null) {
+                    this.p1.x += ox;
+                    this.p1.y += oy;
+                }
+                if (this.p2.pinX === null) {
+                    this.p2.x -= ox;
+                    this.p2.y -= oy;
+                }
+            }
+
+            draw() {
+                if (!this.active) return;
+                ctx.beginPath();
+                ctx.moveTo(this.p1.x, this.p1.y);
+                ctx.lineTo(this.p2.x, this.p2.y);
+                ctx.strokeStyle = `rgba(59, 130, 246, ${Math.min(1, 10 / (this.p1.y * 0.01))})`; // Subtle blue gradient
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+
+            points = [];
+            constraints = [];
+
+            const startX = (width - (settings.clothWidth - 1) * settings.spacing) / 2;
+            const startY = 100;
+
+            // Create Points
+            for (let y = 0; y < settings.clothHeight; y++) {
+                for (let x = 0; x < settings.clothWidth; x++) {
+                    const p = new Point(startX + x * settings.spacing, startY + y * settings.spacing);
+                    
+                    // Pin the top row
+                    if (y === 0 && x % 4 === 0) {
+                        p.pin(p.x, p.y);
+                    }
+
+                    points.push(p);
+
+                    // Add constraints
+                    if (x > 0) {
+                        constraints.push(new Constraint(points[points.length - 2], p));
+                    }
+                    if (y > 0) {
+                        constraints.push(new Constraint(points[points.length - settings.clothWidth - 1], p));
+                    }
+                }
+            }
+        }
+
+        function update() {
+            // Mouse Interaction
+            if (mouse.down) {
+                points.forEach(p => {
+                    const dx = p.x - mouse.x;
+                    const dy = p.y - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (mouse.button === 0) { // Left Click: Drag
+                        if (dist < 30) {
+                            p.px = p.x - (mouse.x - mouse.px);
+                            p.py = p.y - (mouse.y - mouse.py);
+                        }
+                    } else if (mouse.button === 2) { // Right Click: Tear
+                        constraints.forEach(c => {
+                            if (c.active) {
+                                const cdx = (c.p1.x + c.p2.x) / 2 - mouse.x;
+                                const cdy = (c.p1.y + c.p2.y) / 2 - mouse.y;
+                                if (Math.sqrt(cdx * cdx + cdy * cdy) < 20) {
+                                    c.active = false;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Physics Steps
+            points.forEach(p => p.update());
+            
+            // Resolve constraints multiple times for stability
+            for (let i = 0; i < 5; i++) {
+                constraints.forEach(c => c.resolve());
+            }
+
+            // Keep things on screen slightly
+            points.forEach(p => {
+                if (p.y > height) p.y = height;
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw shadow/depth effect
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = 'rgba(59, 130, 246, 0.2)';
+
+            constraints.forEach(c => c.draw());
+        }
+
+        function loop() {
+            update();
+            draw();
+            mouse.px = mouse.x;
+            mouse.py = mouse.y;
+            requestAnimationFrame(loop);
+        }
+
+        // Event Listeners
+        window.addEventListener('mousedown', e => {
+            mouse.down = true;
+            mouse.button = e.button;
+        });
+
+        window.addEventListener('mouseup', () => mouse.down = false);
+
+        window.addEventListener('mousemove', e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('contextmenu', e => e.preventDefault());
+
+        window.addEventListener('resize', init);
+
+        // Start
+        init();
+        loop();
+    </script>
+</body>
+</html>

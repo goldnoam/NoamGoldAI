@@ -21,7 +21,7 @@ function App() {
   const t = TRANSLATIONS[currentLang];
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500);
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -62,15 +62,22 @@ function App() {
   };
 
   const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 15, scale: 0.99 },
+    hidden: { 
+      opacity: 0, 
+      y: 20,
+    },
     visible: { 
       opacity: 1, 
       y: 0, 
-      scale: 1,
       transition: {
-        duration: 0.6,
-        ease: [0.22, 1, 0.36, 1]
+        duration: 0.5,
+        ease: [0.25, 0.1, 0.25, 1.0], // Smooth cubic-bezier
       }
+    },
+    exit: { 
+      opacity: 0, 
+      scale: 0.95,
+      transition: { duration: 0.2 } 
     }
   };
 
@@ -199,9 +206,9 @@ function App() {
                 return (
                   <motion.div 
                     key={card.id} 
+                    layout
                     className={gridClass}
                     variants={cardVariants}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
                   >
                     <Card
                       data={card}
