@@ -16,9 +16,14 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
             <h2 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {t.title}
             </h2>
-            <p className="text-muted-foreground text-sm font-medium">
-              &copy; {t.footerRights}
-            </p>
+            <div className="flex flex-col gap-1">
+              <p className="text-muted-foreground text-sm font-bold">
+                &copy; Noam Gold AI 2026
+              </p>
+              <p className="text-muted-foreground text-xs opacity-60">
+                All Rights Reserved
+              </p>
+            </div>
           </div>
 
           <div className="flex flex-wrap justify-center gap-8">

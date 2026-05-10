@@ -16,7 +16,7 @@ import { Sun, Moon, Search, X, Sparkles } from 'lucide-react';
 function App() {
   const [loading, setLoading] = useState(true);
   const [currentLang, setCurrentLang] = useState<LanguageCode>(LanguageCode.EN);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light' | 'colorful'>('dark');
   const [searchQuery, setSearchQuery] = useState('');
   const [showClothLab, setShowClothLab] = useState(false);
   const t = TRANSLATIONS[currentLang];
@@ -33,13 +33,17 @@ function App() {
   }, [currentLang]);
 
   useEffect(() => {
-    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.remove('dark', 'light', 'colorful');
     document.documentElement.classList.add(theme);
   }, [theme]);
 
   // Remove searchKey effect to satisfy linter, use searchQuery in key instead
   const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+    setTheme(prev => {
+      if (prev === 'dark') return 'light';
+      if (prev === 'light') return 'colorful';
+      return 'dark';
+    });
   };
 
   const filteredCards = useMemo(() => {
@@ -52,34 +56,49 @@ function App() {
     });
   }, [searchQuery, t]);
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.1,
+        delayChildren: 0.2,
+        when: "beforeChildren",
       },
     },
+    exit: {
+      opacity: 0,
+      transition: {
+        staggerChildren: 0.05,
+        staggerDirection: -1,
+        when: "afterChildren",
+      }
+    }
   };
 
   const cardVariants: Variants = {
     hidden: { 
       opacity: 0, 
-      y: 20,
+      y: 30,
+      scale: 0.95,
     },
     visible: { 
       opacity: 1, 
       y: 0, 
+      scale: 1,
       transition: {
-        duration: 0.5,
-        ease: [0.25, 0.1, 0.25, 1.0], // Smooth cubic-bezier
+        duration: 0.7,
+        ease: [0.16, 1, 0.3, 1], // Custom out-expo like ease
       }
     },
     exit: { 
       opacity: 0, 
-      scale: 0.95,
-      transition: { duration: 0.2 } 
+      scale: 0.9,
+      y: 10,
+      transition: { 
+        duration: 0.3,
+        ease: "easeIn"
+      } 
     }
   };
 
@@ -159,10 +178,14 @@ function App() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleTheme}
-              className="p-2.5 rounded-full glass border border-white/10 text-foreground hover:text-primary transition-all duration-300 shadow-sm"
+              className={`p-2.5 rounded-full glass border border-white/10 transition-all duration-300 shadow-sm ${
+                theme === 'colorful' ? 'text-primary' : 'text-foreground hover:text-primary'
+              }`}
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
+              {theme === 'dark' && <Moon size={20} />}
+              {theme === 'light' && <Sun size={20} />}
+              {theme === 'colorful' && <Sparkles size={20} />}
             </motion.button>
             <div className="hidden xs:block">
               <LanguageSelector 
