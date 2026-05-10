@@ -128,14 +128,10 @@ function App() {
             >
               <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-primary/20 group-hover/profile:border-primary transition-all duration-500 group-hover/profile:scale-110 group-hover/profile:rotate-3 shadow-lg bg-gray-800">
                 <img 
-                  src="/image.png" 
+                  src="https://ui-avatars.com/api/?name=Noam+Gold&background=3b82f6&color=fff&bold=true" 
                   alt="Noam Gold" 
                   className="w-full h-full object-cover"
                   loading="eager"
-                  onError={(e) => {
-                    // Fallback to a placeholder if image is missing
-                    (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Noam+Gold&background=3b82f6&color=fff&bold=true";
-                  }}
                 />
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full animate-pulse"></div>

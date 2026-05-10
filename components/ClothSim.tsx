@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import { X, Play, Pause, RotateCcw, Image as ImageIcon, Wrench } from 'lucide-react';
+import { X, Play, Pause, RotateCcw } from 'lucide-react';
 
 interface Point {
   x: number;
@@ -24,7 +24,6 @@ const ClothSim: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, px: 0, py: 0, down: false, button: 0, shift: false });
   const [paused, setPaused] = React.useState(false);
-  const [useTexture, setUseTexture] = React.useState(true);
   const pausedRef = useRef(false);
 
   useEffect(() => {
@@ -40,18 +39,13 @@ const ClothSim: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
-    const img = new Image();
-    img.src = '/image.png';
-    let imgLoaded = false;
-    img.onload = () => { imgLoaded = true; };
-
     const settings = {
-        width: 30, // Reduced resolution for textured rendering performance
-        height: 30,
-        spacing: 15,
+        width: 60,
+        height: 40,
+        spacing: 12,
         gravity: 0.25,
-        friction: 0.98,
-        tearDistance: 50,
+        friction: 0.99,
+        tearDistance: 60,
         stiffness: 1
     };
 
@@ -148,82 +142,18 @@ const ClothSim: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         }
     };
 
-    const drawTriangle = (
-      p1: Point, p2: Point, p3: Point, 
-      u1: number, v1: number, u2: number, v2: number, u3: number, v3: number
-    ) => {
-      if (!imgLoaded) return;
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.lineTo(p3.x, p3.y);
-      ctx.closePath();
-      ctx.clip();
-
-      const x0 = p1.x, y0 = p1.y;
-      const x1 = p2.x, y1 = p2.y;
-      const x2 = p3.x, y2 = p3.y;
-      const u0 = u1, v0 = v1;
-      const u1_ = u2, v1_ = v2;
-      const u2_ = u3, v2_ = v3;
-
-      const delta = u0 * v1_ + v0 * u2_ + u1_ * v2_ - v1_ * u2_ - v0 * u1_ - u0 * v2_;
-      if (Math.abs(delta) < 0.001) { ctx.restore(); return; }
-      const a = (x0 * v1_ + v0 * x2 + x1 * v2_ - v1_ * x2 - v0 * x1 - x0 * v2_) / delta;
-      const b = (v0 * y1 + y0 * v2_ + v1_ * y2 - v0 * y2 - y0 * v1_ - y1 * v2_) / delta;
-      const c = (u0 * x1 + x0 * u2_ + u1_ * x2 - x1 * u2_ - u0 * x2 - x0 * u1_) / delta;
-      const d = (u0 * y1 + y0 * u2_ + u1_ * y2 - y1 * u2_ - u0 * y2 - y0 * u1_) / delta;
-      const e = (x0 * (v1_ * u2_ - u1_ * v2_) + u0 * (x1 * v2_ - v1_ * x2) + v0 * (u1_ * x2 - x1 * u2_)) / delta;
-      const f = (y0 * (v1_ * u2_ - u1_ * v2_) + u0 * (y1 * v2_ - v1_ * y2) + v0 * (u1_ * y2 - y1 * u2_)) / delta;
-
-      ctx.setTransform(a, d, b, c, e, f);
-      ctx.drawImage(img, 0, 0);
-      ctx.restore();
-    };
-
     const draw = () => {
         ctx.clearRect(0, 0, width, height);
         
-        if (imgLoaded && useTexture) {
-          for (let y = 0; y < settings.height - 1; y++) {
-            for (let x = 0; x < settings.width - 1; x++) {
-              const i = y * settings.width + x;
-              const p1 = points[i];
-              const p2 = points[i + 1];
-              const p3 = points[i + settings.width];
-              const p4 = points[i + settings.width + 1];
-
-              // Only draw if at least one constraint is active for these points to avoid disconnected triangles
-              // Simplified: just draw. Tearing looks like triangles disappearing/stretching.
-              
-              const u1 = (x / (settings.width - 1)) * img.width;
-              const v1 = (y / (settings.height - 1)) * img.height;
-              const u2 = ((x + 1) / (settings.width - 1)) * img.width;
-              const v2 = (y / (settings.height - 1)) * img.height;
-              const u3 = (x / (settings.width - 1)) * img.width;
-              const v3 = ((y + 1) / (settings.height - 1)) * img.height;
-              const u4 = ((x + 1) / (settings.width - 1)) * img.width;
-              const v4 = ((y + 1) / (settings.height - 1)) * img.height;
-
-              drawTriangle(p1, p2, p3, u1, v1, u2, v2, u3, v3);
-              drawTriangle(p2, p4, p3, u2, v2, u4, v4, u3, v3);
-            }
-          }
-        } 
-        
-        // Draw wires if texture off OR optionally on top
-        if (!useTexture || !imgLoaded) {
-          ctx.strokeStyle = '#3b82f6';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          constraints.forEach(c => {
-              if (!c.active) return;
-              ctx.moveTo(c.p1.x, c.p1.y);
-              ctx.lineTo(c.p2.x, c.p2.y);
-          });
-          ctx.stroke();
-        }
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        constraints.forEach(c => {
+            if (!c.active) return;
+            ctx.moveTo(c.p1.x, c.p1.y);
+            ctx.lineTo(c.p2.x, c.p2.y);
+        });
+        ctx.stroke();
     };
 
     let frameId: number;
@@ -302,7 +232,7 @@ const ClothSim: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         window.removeEventListener('resize', init);
         window.removeEventListener('cloth-reset', handleReset);
     };
-  }, [useTexture]); // Re-init loop if texture setting changes or keep simple? Better to just keep simple.
+  }, []);
 
   const handleReset = () => {
     window.dispatchEvent(new CustomEvent('cloth-reset'));
@@ -315,23 +245,7 @@ const ClothSim: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center cursor-crosshair"
     >
-      <div className="absolute top-6 left-6 text-white bg-black/60 backdrop-blur-md p-6 rounded-2xl border border-white/10 pointer-events-none group hover:pointer-events-auto transition-all">
-        <h2 className="text-2xl font-black text-primary mb-3 flex items-center gap-2">
-          <Wrench size={20} />
-          Cloth Lab
-        </h2>
-        <div className="space-y-2 mb-6">
-          <p className="text-sm font-medium opacity-80 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            Drag fast to tear
-          </p>
-          <p className="text-sm font-medium opacity-80 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
-            Right-click / Shift+Drag to cut
-          </p>
-        </div>
-
-        <div className="flex flex-wrap gap-2 pointer-events-auto">
+      <div className="absolute top-6 left-6 flex gap-2 pointer-events-auto">
           <button 
             onClick={() => setPaused(!paused)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${
@@ -351,19 +265,6 @@ const ClothSim: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <RotateCcw size={14} />
             Reset
           </button>
-
-          <button 
-            onClick={() => setUseTexture(!useTexture)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${
-              useTexture 
-                ? 'bg-blue-600 text-white border-blue-500' 
-                : 'bg-white/5 text-white border-white/10 hover:bg-white/10'
-            }`}
-          >
-            <ImageIcon size={14} />
-            Texture: {useTexture ? 'ON' : 'OFF'}
-          </button>
-        </div>
       </div>
 
       <button 
