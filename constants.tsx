@@ -1,5 +1,5 @@
 import { LanguageCode, Translation, CardData } from './types';
-import { Gamepad2, BookOpen, Cpu } from 'lucide-react';
+import { Gamepad2, BookOpen, Cpu, Wrench } from 'lucide-react';
 import React from 'react';
 
 export const LANGUAGES = [
@@ -31,6 +31,8 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     language: "Language",
     search: "Search content...",
     linkedin: "LinkedIn",
+    lab: "Cloth Lab",
+    labDesc: "Interact with a real-time tearable cloth simulation.",
     moreSites: "More Sites",
     moreGames: "More Games",
   },
@@ -51,6 +53,8 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     language: "שפה",
     search: "חפש...",
     linkedin: "לינקדאין",
+    lab: "מעבדת בד",
+    labDesc: "אינטראקציה עם סימולציית בד נקרע בזמן אמת.",
     moreSites: "אתרים נוספים",
     moreGames: "משחקים נוספים",
   },
@@ -71,6 +75,8 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     language: "语言",
     search: "搜索内容...",
     linkedin: "领英",
+    lab: "布料实验室",
+    labDesc: "体验实时可撕裂的布料物理模拟。",
     moreSites: "更多网站",
     moreGames: "更多游戏",
   },
@@ -90,7 +96,9 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     copied: "URL कॉपी किया गया!",
     language: "भाषा",
     search: "खोजें...",
-    linkedin: "लिंक्डइन",
+    linkedin: "लिंक्דइन",
+    lab: "कपड़ा प्रयोगशाला",
+    labDesc: "वास्तविक समय के फटने वाले कपड़े के सिमुलेशन के साथ बातचीत करें।",
     moreSites: "अधिक साइटें",
     moreGames: "अधिक खेल",
   },
@@ -111,6 +119,8 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     language: "Язык",
     search: "Поиск...",
     linkedin: "LinkedIn",
+    lab: "Тканевая лаборатория",
+    labDesc: "Взаимодействуйте с реалистичной симуляцией ткани.",
     moreSites: "Другие сайты",
     moreGames: "Другие игры",
   },
@@ -131,6 +141,8 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     language: "Sprache",
     search: "Suche...",
     linkedin: "LinkedIn",
+    lab: "Tuchlabor",
+    labDesc: "Interagiere mit einer zerreißbaren Stoffsimulation.",
     moreSites: "Weitere Seiten",
     moreGames: "Weitere Spiele",
   },
@@ -151,6 +163,8 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     language: "Idioma",
     search: "Buscar...",
     linkedin: "LinkedIn",
+    lab: "Laboratorio Textil",
+    labDesc: "Interactúa con una simulación de tela rasgable.",
     moreSites: "Más sitios",
     moreGames: "Más juegos",
   },
@@ -171,6 +185,8 @@ export const TRANSLATIONS: Record<LanguageCode, Translation> = {
     language: "Langue",
     search: "Rechercher...",
     linkedin: "LinkedIn",
+    lab: "Labo Tissu",
+    labDesc: "Interagissez avec une simulation de tissu déchirable.",
     moreSites: "Plus de sites",
     moreGames: "Plus de jeux",
   },
@@ -201,6 +217,14 @@ export const CARDS: CardData[] = [
     icon: 'cpu',
     imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800',
   },
+  {
+    id: 'lab',
+    titleKey: 'lab',
+    descKey: 'labDesc',
+    url: '/cloth_simulation.html',
+    icon: 'wrench',
+    imageUrl: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800',
+  },
 ];
 
 export const getIcon = (type: string, className?: string) => {
@@ -208,6 +232,7 @@ export const getIcon = (type: string, className?: string) => {
     case 'gamepad': return <Gamepad2 className={className} />;
     case 'book': return <BookOpen className={className} />;
     case 'cpu': return <Cpu className={className} />;
+    case 'wrench': return <Wrench className={className} />;
     default: return null;
   }
 };

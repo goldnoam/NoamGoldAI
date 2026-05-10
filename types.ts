@@ -26,6 +26,8 @@ export interface Translation {
   language: string;
   search: string;
   linkedin: string;
+  lab: string;
+  labDesc: string;
   moreSites: string;
   moreGames: string;
 }
@@ -35,6 +37,6 @@ export interface CardData {
   titleKey: keyof Translation;
   descKey: keyof Translation;
   url: string;
-  icon: 'gamepad' | 'book' | 'cpu';
+  icon: 'gamepad' | 'book' | 'cpu' | 'wrench';
   imageUrl: string;
 }

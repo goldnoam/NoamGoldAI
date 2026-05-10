@@ -11,9 +11,10 @@ interface CardProps {
   visitText: string;
   loading?: boolean;
   isLarge?: boolean;
+  onAction?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ data, title, description, visitText, loading, isLarge }) => {
+const Card: React.FC<CardProps> = ({ data, title, description, visitText, loading, isLarge, onAction }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -73,7 +74,11 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
   }
 
   const handleCardClick = () => {
-    window.open(data.url, '_blank', 'noopener,noreferrer');
+    if (onAction) {
+      onAction();
+    } else {
+      window.open(data.url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const fallbackImage = "https://images.unsplash.com/photo-1614332287897-cdc485fa562d?auto=format&fit=crop&q=80&w=800";
@@ -86,20 +91,20 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
       whileHover={{ 
-        scale: 1.05,
-        y: -16,
-        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+        scale: 1.01,
+        y: -1.5,
+        transition: { duration: 0.3, ease: "easeOut" }
       }}
       style={{
         rotateX: isHovered ? rotateX : 0,
         rotateY: isHovered ? rotateY : 0,
         transformStyle: "preserve-3d",
       }}
-      className={`group relative flex flex-col h-full glass rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-500 border border-white/10 hover:border-primary/50 hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.7),0_0_40px_rgba(var(--primary),0.2)]`}
+      className={`group relative flex flex-col h-full glass rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-[400ms] border border-white/10 hover:border-primary/40 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5),0_0_20px_rgba(var(--primary),0.1)]`}
     >
       {/* Spotlight Overlay */}
       <motion.div
-        className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-500 group-hover:opacity-100"
         style={{
           background: spotlightBg,
         }}
@@ -136,7 +141,7 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
         
         {/* Icon Overlay */}
-        <div className="absolute bottom-6 left-6 p-4 rounded-2xl glass border border-white/20 text-white shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+        <div className="absolute bottom-6 left-6 p-4 rounded-2xl glass border border-white/20 text-white shadow-2xl transform group-hover:scale-105 group-hover:rotate-3 transition-all duration-[600ms] ease-out">
           {getIcon(data.icon, "w-8 h-8")}
         </div>
 

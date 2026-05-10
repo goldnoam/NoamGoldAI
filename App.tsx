@@ -10,6 +10,7 @@ import AnimatedBackground from './components/AnimatedBackground';
 import WebGLInteraction from './components/WebGLInteraction';
 import GlitterParticles from './components/GlitterParticles';
 import CustomCursor from './components/CustomCursor';
+import ClothSim from './components/ClothSim';
 import { Sun, Moon, Search, X, Sparkles } from 'lucide-react';
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
   const [currentLang, setCurrentLang] = useState<LanguageCode>(LanguageCode.EN);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchKey, setSearchKey] = useState(0);
+  const [showClothLab, setShowClothLab] = useState(false);
   const t = TRANSLATIONS[currentLang];
 
   useEffect(() => {
@@ -36,6 +37,7 @@ function App() {
     document.documentElement.classList.add(theme);
   }, [theme]);
 
+  // Remove searchKey effect to satisfy linter, use searchQuery in key instead
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
@@ -88,6 +90,10 @@ function App() {
       <WebGLInteraction />
       <GlitterParticles />
 
+      <AnimatePresence>
+        {showClothLab && <ClothSim onClose={() => setShowClothLab(false)} />}
+      </AnimatePresence>
+
       <header className="sticky top-0 z-50 w-full glass-dark border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
           <motion.div 
@@ -101,12 +107,16 @@ function App() {
               onMouseEnter={() => window.dispatchEvent(new CustomEvent('profile-hover', { detail: { isHovering: true } }))}
               onMouseLeave={() => window.dispatchEvent(new CustomEvent('profile-hover', { detail: { isHovering: false } }))}
             >
-              <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-primary/20 group-hover/profile:border-primary transition-all duration-500 group-hover/profile:scale-110 group-hover/profile:rotate-3 shadow-lg">
+              <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-primary/20 group-hover/profile:border-primary transition-all duration-500 group-hover/profile:scale-110 group-hover/profile:rotate-3 shadow-lg bg-gray-800">
                 <img 
-                  src="https://media.licdn.com/dms/image/v2/D4D35AQEZWD92PXWmlg/profile-framedphoto-shrink_200_200/B4DZopElcZGkAY-/0/1761625659441?e=1776855600&v=beta&t=vGkFkyEEyv6iZm8AFJKerz0y_XWRk6y1XCzqnFq6Rc0" 
+                  src="/image.png" 
                   alt="Noam Gold" 
                   className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
+                  loading="eager"
+                  onError={(e) => {
+                    // Fallback to a placeholder if image is missing
+                    (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Noam+Gold&background=3b82f6&color=fff&bold=true";
+                  }}
                 />
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full animate-pulse"></div>
@@ -129,7 +139,6 @@ function App() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setSearchKey(prev => prev + 1);
               }}
               className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-10 pr-10 rtl:pr-10 rtl:pl-10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm md:text-base backdrop-blur-md"
             />
@@ -137,7 +146,6 @@ function App() {
               <button
                 onClick={() => {
                   setSearchQuery('');
-                  setSearchKey(prev => prev + 1);
                 }}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground rtl:right-auto rtl:left-0 rtl:pl-3"
               >
@@ -189,7 +197,7 @@ function App() {
         <AnimatePresence mode="wait">
           {filteredCards.length > 0 ? (
             <motion.div 
-              key={`grid-${searchKey}`}
+              key={`grid-${searchQuery}`}
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -217,6 +225,7 @@ function App() {
                       visitText={t.visit}
                       loading={loading}
                       isLarge={index === 0}
+                      onAction={card.id === 'lab' ? () => setShowClothLab(true) : undefined}
                     />
                   </motion.div>
                 );

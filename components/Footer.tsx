@@ -33,21 +33,21 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
           <div className="flex flex-col items-center md:items-end gap-6">
             <div className="flex items-center gap-6">
               <motion.a 
-                whileHover={{ scale: 1.2, rotate: 5 }}
+                whileHover={{ scale: 1.1, color: "#0077b5" }}
                 href="https://www.linkedin.com/in/noamgold" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-[#0077b5] transition-colors"
+                className="text-muted-foreground transition-colors duration-300"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={28} />
               </motion.a>
               <motion.a 
-                whileHover={{ scale: 1.2, rotate: -5 }}
+                whileHover={{ scale: 1.1, color: "#ffffff" }}
                 href="https://github.com/goldnoam" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground transition-colors duration-300"
                 aria-label="GitHub"
               >
                 <Github size={28} />
