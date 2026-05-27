@@ -43,19 +43,19 @@ const CustomCursor: React.FC = () => {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 rounded-full border-2 border-primary pointer-events-none z-[9999] hidden md:block"
+        className="fixed top-0 left-0 w-8 h-8 rounded-full border-2 border-indigo-500 pointer-events-none z-[9999] hidden md:block"
         style={{
           x: cursorX,
           y: cursorY,
           scale: isHovering ? 1.5 : 1,
-          backgroundColor: isHovering ? 'rgba(var(--primary), 0.1)' : 'transparent',
+          backgroundColor: isHovering ? 'rgba(79, 70, 229, 0.2)' : 'transparent',
         }}
       />
       <motion.div
-        className="fixed top-0 left-0 w-2 h-2 bg-primary rounded-full pointer-events-none z-[9999] hidden md:block"
+        className="fixed top-0 left-0 w-3 h-3 bg-indigo-500 rounded-full pointer-events-none z-[9999] hidden md:block"
         style={{
-          x: mousePos.x - 4,
-          y: mousePos.y - 4,
+          x: mousePos.x - 6,
+          y: mousePos.y - 6,
         }}
       />
     </>

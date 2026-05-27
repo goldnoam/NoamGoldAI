@@ -8,9 +8,11 @@ import Footer from './components/Footer';
 import ShareButton from './components/ShareButton';
 import AnimatedBackground from './components/AnimatedBackground';
 import WebGLInteraction from './components/WebGLInteraction';
+import WebGLGlobe from './components/WebGLGlobe';
 import GlitterParticles from './components/GlitterParticles';
 import CustomCursor from './components/CustomCursor';
 import ClothSim from './components/ClothSim';
+import FaceTracker from './components/FaceTracker';
 import { Sun, Moon, Search, X, Sparkles } from 'lucide-react';
 
 function App() {
@@ -61,7 +63,7 @@ function App() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.2, // Increased from 0.1
         delayChildren: 0.2,
         when: "beforeChildren",
       },
@@ -105,8 +107,10 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden selection:bg-primary/30 cursor-none">
       <CustomCursor />
+      <FaceTracker />
       <AnimatedBackground />
       <WebGLInteraction />
+      <WebGLGlobe />
       <GlitterParticles />
 
       <AnimatePresence>

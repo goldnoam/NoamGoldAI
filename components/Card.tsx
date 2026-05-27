@@ -3,6 +3,7 @@ import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { ExternalLink } from 'lucide-react';
 import { getIcon } from '../constants';
 import { CardData } from '../types';
+import WebGLGlobe from './WebGLGlobe';
 
 interface CardProps {
   data: CardData;
@@ -124,20 +125,26 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
 
       {/* Thumbnail Image Container */}
       <div className={`relative w-full overflow-hidden bg-muted ${isLarge ? 'h-64 md:h-full' : 'h-48'}`}>
-        {!imageLoaded && !imageError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/5 animate-pulse">
-            <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
-          </div>
+        {data.id === 'lab' ? (
+          <WebGLGlobe className="absolute inset-0 z-0" canvasClassName="w-full h-full object-cover" />
+        ) : (
+          <>
+            {!imageLoaded && !imageError && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/5 animate-pulse">
+                <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+              </div>
+            )}
+            <img 
+              src={imageError ? fallbackImage : data.imageUrl} 
+              alt={title}
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
+              className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              loading="lazy"
+              referrerPolicy="no-referrer"
+            />
+          </>
         )}
-        <img 
-          src={imageError ? fallbackImage : data.imageUrl} 
-          alt={title}
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageError(true)}
-          className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-          loading="lazy"
-          referrerPolicy="no-referrer"
-        />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
         
         {/* Icon Overlay */}
