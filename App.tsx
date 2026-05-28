@@ -217,6 +217,10 @@ function App() {
           </p>
         </motion.div>
 
+        <div className="flex justify-end mb-8">
+          <div id="canvas-container" className="w-[400px] h-[400px] bg-transparent"></div>
+        </div>
+
         <AnimatePresence mode="wait">
           {filteredCards.length > 0 ? (
             <motion.div 
