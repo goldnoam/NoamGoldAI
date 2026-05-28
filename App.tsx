@@ -217,9 +217,6 @@ function App() {
           </p>
         </motion.div>
 
-        <div className="flex justify-end mb-8">
-          <div id="canvas-container" className="w-[400px] h-[400px] bg-transparent"></div>
-        </div>
 
         <AnimatePresence mode="wait">
           {filteredCards.length > 0 ? (
@@ -239,22 +236,32 @@ function App() {
                     : "md:col-span-4 md:row-span-1";
                 
                 return (
-                  <motion.div 
-                    key={card.id} 
-                    layout
-                    className={gridClass}
-                    variants={cardVariants}
-                  >
-                    <Card
-                      data={card}
-                      title={t[card.titleKey]}
-                      description={t[card.descKey]}
-                      visitText={t.visit}
-                      loading={loading}
-                      isLarge={index === 0}
-                      onAction={card.id === 'lab' ? () => setShowClothLab(true) : undefined}
-                    />
-                  </motion.div>
+                  <React.Fragment key={card.id}>
+                    <motion.div 
+                      layout
+                      className={gridClass}
+                      variants={cardVariants}
+                    >
+                      <Card
+                        data={card}
+                        title={t[card.titleKey]}
+                        description={t[card.descKey]}
+                        visitText={t.visit}
+                        loading={loading}
+                        isLarge={index === 0}
+                        onAction={card.id === 'lab' ? () => setShowClothLab(true) : undefined}
+                      />
+                    </motion.div>
+                    {card.id === 'lab' && (
+                      <motion.div 
+                        layout
+                        className="md:col-span-4 md:row-span-1 border border-white/10 rounded-2xl p-4 flex items-center justify-center glass glass-dark"
+                        variants={cardVariants}
+                      >
+                         <div id="canvas-container" className="w-full h-full bg-transparent"></div>
+                      </motion.div>
+                    )}
+                  </React.Fragment>
                 );
               })}
             </motion.div>
