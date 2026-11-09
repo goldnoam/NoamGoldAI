@@ -13,7 +13,9 @@ import GlitterParticles from './components/GlitterParticles';
 import CustomCursor from './components/CustomCursor';
 import ClothSim from './components/ClothSim';
 import FaceTracker from './components/FaceTracker';
-import { Sun, Moon, Search, X, Sparkles } from 'lucide-react';
+import WebGLThemeSwitch from './components/WebGLThemeSwitch';
+import BlogSection from './components/BlogSection';
+import { Search, X, Sparkles } from 'lucide-react';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -37,13 +39,12 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.remove('dark', 'light', 'colorful');
     document.documentElement.classList.add(theme);
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme } }));
   }, [theme]);
 
-  // Remove searchKey effect to satisfy linter, use searchQuery in key instead
   const toggleTheme = () => {
     setTheme(prev => {
       if (prev === 'dark') return 'light';
-      if (prev === 'light') return 'colorful';
       return 'dark';
     });
   };
@@ -63,8 +64,8 @@ function App() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2, // Increased from 0.1
-        delayChildren: 0.2,
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
         when: "beforeChildren",
       },
     },
@@ -90,7 +91,7 @@ function App() {
       scale: 1,
       transition: {
         duration: 0.7,
-        ease: [0.16, 1, 0.3, 1], // Custom out-expo like ease
+        ease: [0.16, 1, 0.3, 1],
       }
     },
     exit: { 
@@ -129,6 +130,7 @@ function App() {
               onDoubleClick={() => window.open('https://www.linkedin.com/in/noamgold', '_blank')}
               onMouseEnter={() => window.dispatchEvent(new CustomEvent('profile-hover', { detail: { isHovering: true } }))}
               onMouseLeave={() => window.dispatchEvent(new CustomEvent('profile-hover', { detail: { isHovering: false } }))}
+              title="Double click to visit LinkedIn"
             >
               <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-primary/20 group-hover/profile:border-primary transition-all duration-500 group-hover/profile:scale-110 group-hover/profile:rotate-3 shadow-lg bg-gray-800">
                 <img 
@@ -156,16 +158,12 @@ function App() {
               type="text"
               placeholder={t.search}
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-10 pr-10 rtl:pr-10 rtl:pl-10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm md:text-base backdrop-blur-md"
             />
             {searchQuery && (
               <button
-                onClick={() => {
-                  setSearchQuery('');
-                }}
+                onClick={() => setSearchQuery('')}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground rtl:right-auto rtl:left-0 rtl:pl-3"
               >
                 <X size={16} />
@@ -174,19 +172,12 @@ function App() {
           </div>
           
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={toggleTheme}
-              className={`p-2.5 rounded-full glass border border-white/10 transition-all duration-300 shadow-sm ${
-                theme === 'colorful' ? 'text-primary' : 'text-foreground hover:text-primary'
-              }`}
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' && <Moon size={20} />}
-              {theme === 'light' && <Sun size={20} />}
-              {theme === 'colorful' && <Sparkles size={20} />}
-            </motion.button>
+            {/* WEBGL SUN SHADE AND MOON SHADE BUTTON SWITCH */}
+            <WebGLThemeSwitch
+              theme={theme}
+              onToggle={toggleTheme}
+            />
+
             <div className="hidden xs:block">
               <LanguageSelector 
                 currentLang={currentLang} 
@@ -217,7 +208,6 @@ function App() {
           </p>
         </motion.div>
 
-
         <AnimatePresence mode="wait">
           {filteredCards.length > 0 ? (
             <motion.div 
@@ -228,7 +218,12 @@ function App() {
               className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 auto-rows-[300px]"
             >
               {filteredCards.map((card, index) => {
-                // Bento grid logic: first card is large, others are medium
+                // Bento grid layout:
+                // First card (Games): wide hero (8 cols, 2 rows)
+                // Second card (Learn): tall (4 cols, 2 rows)
+                // Third card (Tech): standard (4 cols, 1 row)
+                // Fourth card (Blog): standard (4 cols, 1 row)
+                // Fifth card (ClothLab): standard (4 cols, 1 row)
                 const gridClass = index === 0 
                   ? "md:col-span-8 md:row-span-2" 
                   : index === 1 
@@ -246,19 +241,30 @@ function App() {
                         data={card}
                         title={t[card.titleKey]}
                         description={t[card.descKey]}
-                        visitText={t.visit}
+                        visitText={card.id === 'blog' ? t.readArticles : t.visit}
                         loading={loading}
                         isLarge={index === 0}
-                        onAction={card.id === 'lab' ? () => setShowClothLab(true) : undefined}
+                        onAction={
+                          card.id === 'lab' 
+                            ? () => setShowClothLab(true) 
+                            : card.id === 'blog'
+                              ? () => {
+                                  const el = document.getElementById('blog');
+                                  el?.scrollIntoView({ behavior: 'smooth' });
+                                }
+                              : undefined
+                        }
                       />
                     </motion.div>
+
+                    {/* Canvas Cube positioned right after ClothLab */}
                     {card.id === 'lab' && (
                       <motion.div 
                         layout
-                        className="md:col-span-4 md:row-span-1 border border-white/10 rounded-2xl p-4 flex items-center justify-center glass glass-dark"
+                        className="md:col-span-4 md:row-span-1 border border-white/10 rounded-2xl p-4 flex items-center justify-center glass glass-dark min-h-[300px]"
                         variants={cardVariants}
                       >
-                         <div id="canvas-container" className="w-full h-full bg-transparent"></div>
+                         <div id="canvas-container" className="w-full h-full min-h-[260px] bg-transparent"></div>
                       </motion.div>
                     )}
                   </React.Fragment>
@@ -282,6 +288,9 @@ function App() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* NEW SECTION FOR ARTICLES AND UPDATES ABOUT NOAM GOLD AI */}
+        <BlogSection t={t} />
       </main>
 
       <Footer t={t} />
@@ -291,3 +300,4 @@ function App() {
 }
 
 export default App;
+

@@ -147,35 +147,59 @@
     
     function init() {
       const container = document.getElementById('canvas-container');
-      if (!container) return; // Wait for element to exist
+      if (!container || container.querySelector('canvas')) return;
       
-      // Scene setup
+      const width = container.clientWidth || 300;
+      const height = container.clientHeight || 300;
+      
+      // Scene setup - transparent to blend with theme
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x1a1a2e);
       
       // Camera setup
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-      camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-      camera.position.z = 2;
+      camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+      camera.position.z = 2.4;
       
       // Renderer setup
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(width, height);
-      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.shadowMap.enabled = true;
+      renderer.domElement.style.width = '100%';
+      renderer.domElement.style.height = '100%';
+      renderer.domElement.style.cursor = 'grab';
+      renderer.domElement.title = 'Double click to open LinkedIn (Noam Gold)';
       container.appendChild(renderer.domElement);
       
       // Create cube
       const geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
       
-      // Load texture
+      // Load texture with procedural fallback if missing
       const textureLoader = new THREE.TextureLoader();
-      const texture = textureLoader.load('/image1.png');
+      const texture = textureLoader.load('/image1.png', undefined, undefined, () => {
+        // Fallback canvas texture if image1.png not loaded
+        const fallbackCanvas = document.createElement('canvas');
+        fallbackCanvas.width = 512;
+        fallbackCanvas.height = 512;
+        const ctx = fallbackCanvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#1e1b4b';
+          ctx.fillRect(0, 0, 512, 512);
+          ctx.strokeStyle = '#6366f1';
+          ctx.lineWidth = 20;
+          ctx.strokeRect(10, 10, 492, 492);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 44px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('NOAM GOLD AI', 256, 256);
+          cube.material.map = new THREE.CanvasTexture(fallbackCanvas);
+          cube.material.needsUpdate = true;
+        }
+      });
       
-      const material = new THREE.MeshPhongMaterial({
+      const material = new THREE.MeshStandardMaterial({
         map: texture,
-        shininess: 100
+        roughness: 0.3,
+        metalness: 0.2,
       });
       
       cube = new THREE.Mesh(geometry, material);
@@ -183,72 +207,106 @@
       cube.receiveShadow = true;
       scene.add(cube);
       
-      // Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      // Studio Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
       scene.add(ambientLight);
       
-      const pointLight = new THREE.PointLight(0xffffff, 0.8);
-      pointLight.position.set(8, 8, 8);
+      const pointLight = new THREE.PointLight(0xffffff, 1.2);
+      pointLight.position.set(5, 5, 5);
       pointLight.castShadow = true;
       scene.add(pointLight);
+
+      const blueRimLight = new THREE.DirectionalLight(0x6366f1, 0.6);
+      blueRimLight.position.set(-5, -3, -2);
+      scene.add(blueRimLight);
       
       // Handle window resize
       window.addEventListener('resize', onWindowResize);
       
-      // Animation loop
+      // Interactive pointer rotation
+      let isDragging = false;
+      let prevMouseX = 0;
+      let prevMouseY = 0;
+      let targetRotX = 0;
+      let targetRotY = 0;
+
+      renderer.domElement.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+        renderer.domElement.style.cursor = 'grabbing';
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+        if (renderer && renderer.domElement) {
+          renderer.domElement.style.cursor = 'grab';
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - prevMouseX;
+        const deltaY = e.clientY - prevMouseY;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+        targetRotY += deltaX * 0.01;
+        targetRotX += deltaY * 0.01;
+      });
+
+      // Animation loop with smooth rotation
       function animate() {
         requestAnimationFrame(animate);
         
-        // Rotate cube
-        cube.rotation.x += 0.003;
-        cube.rotation.y += 0.005;
+        if (!isDragging) {
+          cube.rotation.y += 0.006;
+          cube.rotation.x += 0.003;
+        } else {
+          cube.rotation.y += (targetRotY - cube.rotation.y) * 0.1;
+          cube.rotation.x += (targetRotX - cube.rotation.x) * 0.1;
+        }
         
         renderer.render(scene, camera);
       }
       
       animate();
 
-      // Add raycaster for interaction
+      // Double-click raycaster interaction -> LinkedIn
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
 
       renderer.domElement.addEventListener('dblclick', (event) => {
-        // Calculate mouse position in normalized device coordinates
-        // (-1 to +1) for both components
         const rect = renderer.domElement.getBoundingClientRect();
         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-        // Update the raycaster
         raycaster.setFromCamera(mouse, camera);
-
-        // Check intersection
         const intersects = raycaster.intersectObject(cube);
 
         if (intersects.length > 0) {
-            window.open('https://www.linkedin.com/in/noamgold', '_blank');
+          window.open('https://www.linkedin.com/in/noamgold', '_blank');
         }
       });
     }
     
     function onWindowResize() {
       const container = document.getElementById('canvas-container');
-      if (!container) return;
-      const width = container.clientWidth;
-      const height = container.clientHeight;
+      if (!container || !renderer || !camera) return;
+      const width = container.clientWidth || 300;
+      const height = container.clientHeight || 300;
       
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
     }
     
-    // Initialize when page loads, retry if container not yet in DOM
-    const checkContainer = setInterval(() => {
-        if(document.getElementById('canvas-container')) {
-            clearInterval(checkContainer);
-            init();
-        }
-    }, 100);
+    // Check periodically for canvas container presence and re-mount if needed
+    setInterval(() => {
+      const container = document.getElementById('canvas-container');
+      if (container && !container.querySelector('canvas')) {
+        init();
+      }
+    }, 250);
   </script>
   </body>
 </html>

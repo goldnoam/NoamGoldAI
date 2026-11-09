@@ -15,10 +15,13 @@ export interface Translation {
   games: string;
   learn: string;
   tech: string;
+  blog: string;
   gamesDesc: string;
   learnDesc: string;
   techDesc: string;
+  blogDesc: string;
   visit: string;
+  readArticles: string;
   footerRights: string;
   sendFeedback: string;
   share: string;
@@ -30,6 +33,8 @@ export interface Translation {
   labDesc: string;
   moreSites: string;
   moreGames: string;
+  articlesAndUpdates: string;
+  articlesSubtitle: string;
 }
 
 export interface CardData {
@@ -37,6 +42,6 @@ export interface CardData {
   titleKey: keyof Translation;
   descKey: keyof Translation;
   url: string;
-  icon: 'gamepad' | 'book' | 'cpu' | 'wrench';
+  icon: 'gamepad' | 'book' | 'cpu' | 'wrench' | 'newspaper';
   imageUrl: string;
 }

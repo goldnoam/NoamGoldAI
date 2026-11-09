@@ -74,9 +74,13 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
     );
   }
 
-  const handleCardClick = () => {
+  const handleCardClick = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     if (onAction) {
       onAction();
+    } else if (data.url.startsWith('#')) {
+      const el = document.querySelector(data.url);
+      el?.scrollIntoView({ behavior: 'smooth' });
     } else {
       window.open(data.url, '_blank', 'noopener,noreferrer');
     }
@@ -90,10 +94,10 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={handleCardClick}
+      onClick={() => handleCardClick()}
       whileHover={{ 
-        scale: 1.01,
-        y: -1.5,
+        scale: 1.015,
+        y: -3,
         transition: { duration: 0.3, ease: "easeOut" }
       }}
       style={{
@@ -171,17 +175,15 @@ const Card: React.FC<CardProps> = ({ data, title, description, visitText, loadin
 
         {/* Bottom Actions */}
         <div className="mt-auto flex items-center justify-between">
-          <a
-            href={data.url}
-            target="_blank"
-            rel="noopener noreferrer"
+          <span
+            onClick={(e) => handleCardClick(e)}
             className="inline-flex items-center text-sm font-black uppercase tracking-widest text-primary group-hover:text-primary/80 transition-colors cursor-pointer"
           >
             {visitText}
             <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform duration-300 rtl:rotate-180 rtl:group-hover:-translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
-          </a>
+          </span>
         </div>
       </div>
     </motion.div>
